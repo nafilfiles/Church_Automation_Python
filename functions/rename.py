@@ -21,7 +21,10 @@ def renamefile(oldname, newname):
         
 def validation(string):
     #  print(pv.sanitize_filename(string))
-    return string == pv.sanitize_filename(string, platform="auto")
+    if string != pv.sanitize_filename(string, platform="auto") or string == "":
+        return False
+    else:
+        return True
 
 # input = input("enter a string")
 # validation(input)
