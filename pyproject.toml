@@ -8,6 +8,10 @@ dependencies = [
     "pathvalidate>=3.3.1",
 ]
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["functions*"]
+
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",

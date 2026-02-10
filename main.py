@@ -1,4 +1,4 @@
-import rename
+from functions.rename import renamefile
 import pathvalidate as pv
 
 def main():
@@ -12,7 +12,7 @@ def main():
         new_name = input("Filename contains forbidden characterswhat\n")
     # print(old_name)
     # print(new_name)
-    rename.renamefile(old_name, new_name)
+    renamefile(old_name, new_name)
 
 
 if __name__ == "__main__":
