@@ -27,4 +27,4 @@ def validation(string):
         return True
 
 # input = input("enter a string")
-# validation(input)
+# print(validation(input))

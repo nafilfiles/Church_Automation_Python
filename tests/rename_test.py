@@ -1,5 +1,5 @@
-from functions.rename import validation
+from src import rename
 
 def test_validation():
-    assert validation("validname.txt")
-    assert not validation("invalid<name>.txt")
+    assert rename.validation("validname.txt")
+    assert not rename.validation("invalid<name>.txt")
