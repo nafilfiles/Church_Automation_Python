@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "dotenv>=0.9.9",
     "moviepy>=2.2.1",
     "pathlib>=1.0.1",
     "pathvalidate>=3.3.1",

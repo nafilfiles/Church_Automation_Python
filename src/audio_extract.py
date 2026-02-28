@@ -3,9 +3,6 @@ from moviepy import VideoFileClip
 
 # Define the input video file and output audio file
 def extract_audio(input, output):
-    input = "video.mov"
-    output = "audio.mp3"
-
     # Load the video clip
     video_clip = VideoFileClip(input)
 
