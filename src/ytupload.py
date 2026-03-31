@@ -27,11 +27,11 @@ def authenticate_youtube():
 
     return youtube
 
-def upload_video(youtube):
+def upload_video(youtube, title):
     request_body = {
         "snippet": {
             "categoryId": "22",
-            "title": "Uploaded from Python",
+            "title": title,
             "description": "This is the most awsome description ever",
             "tags": ["test","python", "api" ]
         },

@@ -39,7 +39,7 @@ def main():
               rename.renamefile(fullpath, f"{string}\\{user_input}")
 
               youtube = authenticate_youtube()
-              upload_video(youtube)
+              upload_video(youtube, "amazing title")
 
 
     
