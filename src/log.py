@@ -6,9 +6,8 @@ videoinfo = [
     "wooooow"
 ]
 
-# Open a file in write mode ('w') and write a single string
+# New file with data from videoinfo variable
 with open("log.txt", "w") as file:
     for i in range(len(videoinfo)):
         file.write(f"{videoinfo[i]}\n")
     file.write("end!")
-# The file is automatically closed after the 'with' block is executed
