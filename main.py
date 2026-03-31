@@ -11,6 +11,9 @@ from tkinter import simpledialog
 
 import re
 
+from src.ytupload import authenticate_youtube
+from src.ytupload import upload_video
+
 def main():
   class MyEventHandler(FileSystemEventHandler):
       def __init__(self):
@@ -34,6 +37,9 @@ def main():
                                       parent=root)
                 
               rename.renamefile(fullpath, f"{string}\\{user_input}")
+
+              youtube = authenticate_youtube()
+              upload_video(youtube)
 
 
     
