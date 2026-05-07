@@ -1,53 +1,95 @@
-from src import rename
-import pathvalidate as pv
 
+# from src.youtube import Video
 
+# from datetime import datetime
 import time
+import os
+import re
+from dotenv import load_dotenv
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-
 import tkinter as tk
-from tkinter import simpledialog
+from src.rename import renamefile
+from src.env_vars import input_vars
+from src.audio_extract import extract_audio
+from src.log import create_log
+from src.ytupload import authenticate_youtube, upload_video
 
-import re
+# load path variables from dotenv
+load_dotenv()
+watchpath = os.getenv("watchpath")
+audiopath = os.getenv("audiopath")
+logpath = os.getenv("logpath")
 
-from src.ytupload import authenticate_youtube
-from src.ytupload import upload_video
+# trigger path input dialog if any path variable is not found
+if watchpath is None or audiopath is None or logpath is None:
+    input_vars()
+    load_dotenv()
 
+# main script functions w/ file watcher
 def main():
   class MyEventHandler(FileSystemEventHandler):
       def __init__(self):
           self.actionstack = ""
+          
       def on_any_event(self, event):
+          # look for video made by OBS
           self.actionstack += event.event_type[0]
-          # print(self.actionstack)
+          print(self.actionstack)
           if re.search(r"c\w*d\w*c\w*m", self.actionstack):
+              # clear actionstack on trigger
               self.actionstack = ""
               fullpath = event.src_path
               string = event.src_path.rsplit("\\", maxsplit=1)[0]
-              # print(string)
-              # create a hidden main window
-              root = tk.Tk()
-              root.withdraw() 
 
-              # open the prompt dialog
-              user_input = ""
-              while user_input == "":
-                user_input = simpledialog.askstring("Input", "Input new file name",
-                                      parent=root)
+              def submit():
+                title = title_entry.get()
+                speaker = speaker_entry.get()
+                # rename file
+                renamefile(fullpath, f"{string}\\{title} - {speaker}.mkv")
+
+                # upload to youtube
+                youtube = authenticate_youtube()
+                upload_video(youtube, f"{title} - {speaker}")
+
+                # extract audio
+                extract_audio(f"{string}\\{title} - {speaker}.mkv", f"{audiopath}\\{title} - {speaker}.mp3")
+
+                # define log file data and create log file
+                videoinfo = [title, speaker, fullpath]
+                create_log(videoinfo, logpath)
                 
-              rename.renamefile(fullpath, f"{string}\\{user_input}")
+                root.destroy()
 
-              youtube = authenticate_youtube()
-              upload_video(youtube, "amazing title")
+              # Create main window
+              root = tk.Tk()
+              root.title("Input Form")
+              root.geometry("300x150")
 
+              # Title label and entry
+              title_label = tk.Label(root, text="Title")
+              title_label.pack()
+              title_entry = tk.Entry(root, width=30)
+              title_entry.pack()
+              # Speaker label and entry
+              speaker_label = tk.Label(root, text="Speaker")
+              speaker_label.pack()
+              speaker_entry = tk.Entry(root, width=30)
+              speaker_entry.pack()
 
-    
+              # Submit button
+              submit_button = tk.Button(root, text="Submit", command=submit)
+              submit_button.pack(pady=10)
+
+              # Run the app
+              root.mainloop()
+            
   # Set up the observer and event handler
   event_handler = MyEventHandler()
   observer = Observer()
   # Watch the current directory ('.') recursively
-  observer.schedule(event_handler, r'C:\Users\nickh\Desktop\watch', recursive=True) 
+  observer.schedule(event_handler, watchpath, recursive=True) 
+  print(watchpath)
 
   # Start the observer
   observer.start()
@@ -57,42 +99,6 @@ def main():
   except KeyboardInterrupt:
       observer.stop()
   observer.join()
-
-# class Video:
-#   def __init__(self, date, title, speaker):
-#     self.date = date
-#     self.title = title
-#     self.speaker = speaker
-
-#   def showtitle(self):
-#     print(self.title)
-
-# def main():
-    # old_name = ""
-    # print("Hello from church-automation-python!")
-    # # old_name = input("Enter the file you want to rename: \n")
-    # while not pv.is_valid_filename(old_name):
-    #     print("Filename contains forbidden characters")
-    #     old_name = input("Enter the file you want to rename:\n")
-
-    # new_name = input("Enter the new name for the file: \n")
-    # while not pv.is_valid_filename(new_name):
-    #     new_name = input("Filename contains forbidden characters\n")
-    # # print(old_name)
-    # # print(new_name)
-    # rename.renamefile(old_name, new_name)
-
-    # # display the result
-    # if user_input is not None:
-    #     print(f"Hello, {user_input}!")
-    #     video_data = user_input.split(",")
-    #     v1 = Video(video_data[0], video_data[1], video_data[2])
-    #     v1.showtitle()
-    # else:
-    #     print("No name entered.")
-
-
-
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+# import os
 
 windows_path_string = "C:\\Users\\username\\Documents\\file.txt"
 
